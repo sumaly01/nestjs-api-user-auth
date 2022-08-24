@@ -6,14 +6,18 @@ import {
   Param,
   Patch,
   Delete,
+  // UseInterceptors,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 // import { User } from './user.model';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { UserDto } from './dtos/user.dto';
 
 @Controller('auth')
+@Serialize(UserDto) //so that it works for all routes
 export class UsersController {
   constructor(public usersService: UsersService) {}
 
@@ -33,8 +37,11 @@ export class UsersController {
     return users;
   }
 
+  // @UseInterceptors(new SerializeInterceptor(UserDto))
+  // @Serialize(UserDto)
   @Get('/:id')
   async getUser(@Param('id') id: string) {
+    // console.log('handler');
     const user = await this.usersService.getUser(id);
     return user;
   }
@@ -43,9 +50,10 @@ export class UsersController {
   async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     const updatedUser = await this.usersService.updateUser(
       id,
-      body.username,
-      body.email,
-      body.password,
+      // body.username,
+      // body.email,
+      // body.password,
+      body,
     );
     return updatedUser;
   }

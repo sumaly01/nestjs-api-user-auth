@@ -41,23 +41,25 @@ export class UsersService {
 
   async updateUser(
     userId: string,
-    username: string,
-    email: string,
-    password: string,
+    attributes: Partial<User>,
+    //     username: string,
+    //     email: string,
+    //     password: string,
   ) {
     const updatedUser = await this.getUser(userId);
 
-    if (username) {
-      updatedUser.username = username;
-    }
-    if (email) {
-      updatedUser.email = email;
-    }
-    if (password) {
-      updatedUser.password = password;
-    }
-    updatedUser.save();
-    return updatedUser;
+    //     if (username) {
+    //       updatedUser.username = username;
+    //     }
+    //     if (email) {
+    //       updatedUser.email = email;
+    //     }
+    //     if (password) {
+    //       updatedUser.password = password;
+    //     }
+    Object.assign(updatedUser, attributes); //overwrites new values to updatedUser
+    const user = await updatedUser.save();
+    return user;
   }
 
   async deleteUser(id: string) {
