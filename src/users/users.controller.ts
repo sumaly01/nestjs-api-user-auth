@@ -15,20 +15,25 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 // import { User } from './user.model';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
+import { AuthService } from './auth.service';
+import { SigninUserDto } from './dtos/signin-user.dto';
 
 @Controller('auth')
 @Serialize(UserDto) //so that it works for all routes
 export class UsersController {
-  constructor(public usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post('/signup')
   async createUser(@Body() body: CreateUserDto) {
-    const user = await this.usersService.createUser(
-      body.username,
-      body.email,
-      body.password,
-    );
-    return user;
+    return this.authService.signup(body.username, body.email, body.password);
+  }
+
+  @Post('/signin')
+  signin(@Body() body: SigninUserDto) {
+    return this.authService.signin(body.email, body.password);
   }
 
   @Get()
